@@ -1,0 +1,62 @@
+
+version: '3.9'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment: { ZOOKEEPER_CLIENT_PORT: 2181 }
+    ports: [ "2181:2181" ]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on: [ zookeeper ]
+    ports: [ "29092:29092" ]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: cryptoquant
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./infra/postgres-init:/docker-entrypoint-initdb.d
+    ports: [ "5432:5432" ]
+
+  redis:
+    image: redis:7
+    ports: [ "6379:6379" ]
+
+  analyzer:
+    build: ./services/analyzer
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/cryptoquant
+      - REDIS_URL=redis://redis:6379
+      - KAFKA_BOOTSTRAP=kafka:9092
+    depends_on: [ kafka, postgres, redis ]
+
+  ingestor:
+    build: ./services/ingestor
+    environment:
+      - KAFKA_BOOTSTRAP=kafka:9092
+    volumes:
+      - ./sample_data:/app/sample_data:ro
+    depends_on: [ kafka ]
+
+  api:
+    build: ./services/api
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/cryptoquant
+      - REDIS_URL=redis://redis:6379
+    ports: [ "8000:8000" ]
+    depends_on: [ analyzer, postgres, redis ]
+
+  dashboard:
+    build: ./webapp
+    ports: [ "5173:5173" ]
+    depends_on: [ api ]
