@@ -1,7 +1,7 @@
 
-# CryptoQuant — Real-Time Crypto & Market Data Analytics Engine
+# CryptoDash — Real-Time Crypto & Market Data Analytics Engine
 
-**CryptoQuant** ingests live (or replayed) crypto ticks, detects **arbitrage opportunities** across exchanges, computes rolling metrics, and exposes **REST + WebSocket** APIs. It's a portfolio-ready project tailored for **crypto + fintech + market-data** companies.
+**CryptoDash** ingests live (or replayed) crypto ticks, detects **arbitrage opportunities** across exchanges, computes rolling metrics, and exposes **REST + WebSocket** APIs. It's a portfolio-ready project tailored for **crypto + fintech + market-data** companies.
 
 ## Highlights
 - 🧩 **Services:** `ingestor` (streams ticks) → `analyzer` (detects arbitrage, aggregates metrics) → `api` (FastAPI REST + WebSocket).
@@ -62,10 +62,3 @@ docker compose up -d --build dashboard
 open http://localhost:5173
 ```
 The dashboard connects to the API at `http://localhost:8000` and `ws://localhost:8000/ws/arbitrage`.
-
-## Talking Points (for interviews)
-- **Streaming pipelines** (Kafka), **stateful analytics** (arbitrage, rolling metrics), **low-latency push** (WebSocket), and **operational infra** (Docker Compose).
-- Clean module boundaries (ingest vs. analyze vs. serve), typed Python, and optional **C++ algorithms** as a performance path.
-- Can extend with ML (anomaly detection), portfolio analytics, or L2/DEX data.
-
-> Educational demo. Do not use for live trading decisions.
