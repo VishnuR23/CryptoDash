@@ -1,7 +1,7 @@
 
 # CryptoDash — Real-Time Crypto & Market Data Analytics Engine
 
-**CryptoDash** ingests live (or replayed) crypto ticks, detects **arbitrage opportunities** across exchanges, computes rolling metrics, and exposes **REST + WebSocket** APIs. It's a portfolio-ready project tailored for **crypto + fintech + market-data** companies.
+**CryptoDash** ingests live (or replayed) crypto ticks, detects **arbitrage opportunities** across exchanges, computes rolling metrics, and exposes **REST + WebSocket** APIs.
 
 ## Highlights
 - 🧩 **Services:** `ingestor` (streams ticks) → `analyzer` (detects arbitrage, aggregates metrics) → `api` (FastAPI REST + WebSocket).
